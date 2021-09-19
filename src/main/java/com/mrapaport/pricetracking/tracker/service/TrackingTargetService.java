@@ -5,6 +5,8 @@ import com.mrapaport.pricetracking.tracker.model.exchange.TrackingSchedulerRespo
 import com.mrapaport.pricetracking.tracker.model.exchange.request.TrackingTargetCreateRequest;
 import com.mrapaport.pricetracking.tracker.model.exchange.response.TrackingTargetCreateResponse;
 import com.mrapaport.pricetracking.tracker.repository.TrackingTargetRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class TrackingTargetService {
 
     @Autowired
     TrackingSchedulerService trackingService;
+
+    Logger logger = LoggerFactory.getLogger(TrackingTargetService.class);
 
     public TrackingTargetCreateResponse save(TrackingTargetCreateRequest request) {
 
