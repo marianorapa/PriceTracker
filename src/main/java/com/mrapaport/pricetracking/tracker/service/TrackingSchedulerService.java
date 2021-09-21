@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,7 +39,7 @@ public class TrackingSchedulerService {
         TimerTask scheduledTask = new TimerTask() {
             @Override
             public void run() {
-                targets.parallelStream().forEach(currentPricingService::checkCurrentPrice);
+                targets.parallelStream().forEach(TrackingSchedulerService.this::checkCurrentPrice);
             }
         };
         Timer timer = new Timer();
@@ -46,9 +47,17 @@ public class TrackingSchedulerService {
     }
 
     public TrackingSchedulerResponse track(TrackingTarget savedTarget) {
-        currentPricingService.checkCurrentPrice(savedTarget);
+        checkCurrentPrice(savedTarget);
         this.targets.add(savedTarget);
         return new TrackingSchedulerResponse();
+    }
+
+    private void checkCurrentPrice(TrackingTarget savedTarget) {
+        try {
+            currentPricingService.checkCurrentPrice(savedTarget);
+        } catch (IOException e) {
+            logger.error("Couldn't get price for target {}", savedTarget.getLink());
+        }
     }
 
 }
